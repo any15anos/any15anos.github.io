@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Any Karoliny · 15 anos</title>
+<meta name="theme-color" content="#8e6cc4">
+
+<!-- Pré-visualização do link no WhatsApp (endereço completo do site) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Any Karoliny · 15 anos 💜">
+<meta property="og:description" content="Sábado, 12 de dezembro, às 19h. Toque para ver o convite e confirmar sua presença!">
+<meta property="og:image" content="https://any15anos.github.io/convite.jpg">
+<meta property="og:url" content="https://any15anos.github.io/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO — para reaproveitar o modelo, mude só aqui
+   ============================================================ */
+const CONFIG = {
+  aniversariante: "Any Karoliny",
+  // URL do Apps Script (termina em /exec). Veja Codigo.gs.
+  // Se ficar vazio, a confirmação vai só pelo WhatsApp.
+  scriptUrl: "https://script.google.com/macros/s/AKfycbwmj-qUw2Idkq6xMpQpkqDkv5NJD5AqaUWMQ66xRDBuUq81Q0Gaeks2Dx3R9sk8Sj70/exec",
+  // WhatsApp de quem recebe as confirmações: 55 + DDD + número, só dígitos
+  whatsapp: "5569984480534",
+  // Link do Google Maps com o local exato (abra o Maps, toque em Compartilhar e cole aqui)
+  mapsUrl: "https://maps.app.goo.gl/dcUYfuMk9uagp9X76",
+  localTexto: "Nos fundos da Chop Mania",
+  dataEvento: "2026-12-12T19:00:00-03:00",
+  dataTexto: "Sábado, 12 de dezembro de 2026, às 19h",
+  // Prazo para confirmar (aparece no formulário). Deixe "" para não mostrar.
+  prazoConfirmacao: "5 de dezembro",
+  // Sugestões de presente: um item por linha. Lista vazia mostra só a mensagem.
+  presentes: [],
+  mensagemPresentes: "Sua presença já é o meu maior presente! 💜",
+  pix: ""   // chave Pix, se quiser oferecer. Deixe "" para esconder.
+};
+</script>
+
+<style>
+  :root{
+    --roxo:#70348d; --lilas:#8e6cc4; --lilas-claro:#b9a3e3; --lavanda:#f3eefb;
+    --texto:#4a3a5c; --dourado:#c9a45c; --branco:#fff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:"Nunito",system-ui,sans-serif; color:var(--texto);
+    background:linear-gradient(180deg,#efe7fa 0%,#f8f4fd 40%,#efe7fa 100%);
+    min-height:100vh; -webkit-tap-highlight-color:transparent;
+  }
+  .wrap{max-width:460px; margin:0 auto; padding:16px 14px 48px}
+
+  /* Convite com áreas clicáveis por cima dos botões da arte */
+  .convite{position:relative; border-radius:18px; overflow:hidden;
+    box-shadow:0 12px 40px rgba(112,52,141,.18); background:#fff; animation:surgir .8s ease both}
+  .convite img{display:block; width:100%; height:auto}
+  .hot{position:absolute; left:25%; width:50%; height:6.2%; border-radius:999px; display:block}
+  .hot:focus-visible{outline:3px solid var(--dourado); outline-offset:2px}
+  .hot-local{top:63.4%} .hot-rsvp{top:70.4%} .hot-presente{top:77.4%}
+  .hot::after{content:""; position:absolute; inset:0; border-radius:inherit; background:#fff; opacity:0; transition:opacity .15s}
+  .hot:active::after{opacity:.25}
+
+  .dica{text-align:center; font-size:13px; color:#8a7a9c; margin:12px 0 0}
+
+  .contagem{display:flex; justify-content:center; gap:8px; margin:22px 0 4px}
+  .contagem div{background:#fff; border-radius:14px; padding:10px 0; width:68px; text-align:center;
+    box-shadow:0 4px 14px rgba(112,52,141,.08)}
+  .contagem b{display:block; font-family:"Cormorant Garamond",serif; font-size:30px; color:var(--roxo); line-height:1}
+  .contagem span{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#9b8aae}
+
+  section.card{background:#fff; border-radius:20px; padding:26px 20px 24px; margin-top:22px;
+    box-shadow:0 8px 28px rgba(112,52,141,.10); scroll-margin-top:16px}
+  h2{font-family:"Great Vibes",cursive; font-weight:400; color:var(--roxo); font-size:40px;
+    text-align:center; margin:0 0 4px; line-height:1.1}
+  .sub{text-align:center; margin:0 0 20px; font-size:14px; color:#8a7a9c}
+
+  label.campo{display:block; font-weight:600; font-size:14px; margin:16px 0 6px}
+  input[type=text], input[type=tel], textarea{
+    width:100%; font:inherit; font-size:16px; color:var(--texto);
+    border:1.5px solid #e3d9f2; border-radius:12px; padding:12px 14px; background:#fcfaff; outline:none;
+  }
+  input:focus, textarea:focus{border-color:var(--lilas); background:#fff}
+  textarea{resize:vertical; min-height:76px}
+
+  .opcoes{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .opcoes input{position:absolute; opacity:0; pointer-events:none}
+  .opcoes label{display:flex; align-items:center; justify-content:center; text-align:center; gap:6px;
+    min-height:54px; padding:8px; border-radius:14px; border:1.5px solid #e3d9f2; background:#fcfaff;
+    font-weight:600; font-size:14px; cursor:pointer; transition:.15s}
+  .opcoes input:checked + label{border-color:var(--lilas); background:var(--lavanda); color:var(--roxo);
+    box-shadow:0 0 0 3px rgba(142,108,196,.18)}
+  .opcoes input:focus-visible + label{outline:2px solid var(--dourado)}
+
+  .contadores{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .contador{border:1.5px solid #e3d9f2; border-radius:14px; padding:10px; text-align:center; background:#fcfaff}
+  .contador small{display:block; font-size:12px; color:#8a7a9c; margin-bottom:6px}
+  .contador .linha{display:flex; align-items:center; justify-content:space-between}
+  .contador button{width:38px; height:38px; border-radius:50%; border:0; background:var(--lavanda);
+    color:var(--roxo); font-size:22px; font-weight:700; cursor:pointer; line-height:1}
+  .contador button:active{background:var(--lilas-claro)}
+  .contador output{font-size:22px; font-weight:700; color:var(--roxo); min-width:28px}
+
+  .btn{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; border:0; cursor:pointer;
+    font:inherit; font-weight:700; font-size:17px; color:#fff; text-decoration:none;
+    background:linear-gradient(135deg,#a585dd,#8061bb); border-radius:999px; padding:15px 18px; margin-top:22px;
+    box-shadow:0 8px 20px rgba(128,97,187,.35)}
+  .btn:disabled{opacity:.6; cursor:wait}
+  .btn.zap{background:linear-gradient(135deg,#2fd06a,#1fae55); box-shadow:0 8px 20px rgba(31,174,85,.3)}
+  .btn.claro{background:var(--lavanda); color:var(--roxo); box-shadow:none}
+  .erro{color:#b3261e; font-size:14px; margin:10px 0 0; text-align:center; min-height:1em}
+  .oculto{display:none !important}
+
+  .obrigado{text-align:center}
+  .obrigado .icone{font-size:46px; margin-bottom:4px}
+  .obrigado p{margin:6px 0}
+
+  ul.presentes{list-style:none; padding:0; margin:6px 0 0}
+  ul.presentes li{padding:11px 14px; border-radius:12px; background:var(--lavanda); margin-bottom:8px}
+  .pix{margin-top:14px; text-align:center; font-size:14px}
+  .pix code{display:inline-block; margin-top:6px; padding:8px 12px; border-radius:10px; background:var(--lavanda);
+    color:var(--roxo); font-size:15px; word-break:break-all}
+
+  .info{display:grid; gap:10px}
+  .info a, .info div{display:flex; gap:12px; align-items:center; padding:12px 14px; border-radius:14px;
+    background:var(--lavanda); color:var(--texto); text-decoration:none; font-size:15px}
+  .info span.ic{font-size:20px}
+
+  footer{text-align:center; font-family:"Great Vibes",cursive; color:var(--lilas); font-size:28px; margin-top:28px}
+
+  @keyframes surgir{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important; scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <div class="convite">
+    <img src="convite.jpg" width="1080" height="1522" alt="Convite de 15 anos de Any Karoliny Nascimento de Freitas. Sábado, 12 de dezembro de 2026, às 19h, nos fundos da Chop Mania.">
+    <a class="hot hot-local" id="hotLocal" target="_blank" rel="noopener" aria-label="Ver a localização da festa no mapa"></a>
+    <a class="hot hot-rsvp" href="#confirmar" aria-label="Confirmar presença"></a>
+    <a class="hot hot-presente" href="#presentes" aria-label="Ver sugestões de presente"></a>
+  </div>
+  <p class="dica">Toque nos botões do convite 💜</p>
+
+  <div class="contagem" id="contagem" aria-label="Contagem regressiva para a festa">
+    <div><b id="cDias">–</b><span>dias</span></div>
+    <div><b id="cHoras">–</b><span>horas</span></div>
+    <div><b id="cMin">–</b><span>min</span></div>
+    <div><b id="cSeg">–</b><span>seg</span></div>
+  </div>
+
+  <!-- CONFIRMAÇÃO -->
+  <section class="card" id="confirmar">
+    <div id="blocoForm">
+      <h2>Confirme sua presença</h2>
+      <p class="sub" id="prazo"></p>
+
+      <form id="form" novalidate>
+        <label class="campo" for="nome">Seu nome</label>
+        <input type="text" id="nome" name="nome" autocomplete="name" placeholder="Nome e sobrenome" required>
+
+        <label class="campo" for="telefone">Seu WhatsApp <span style="font-weight:400;color:#9b8aae">(opcional)</span></label>
+        <input type="tel" id="telefone" name="telefone" autocomplete="tel" inputmode="tel" placeholder="(00) 00000-0000">
+
+        <label class="campo">Você vai?</label>
+        <div class="opcoes" role="radiogroup">
+          <input type="radio" name="presenca" id="sim" value="sim" checked>
+          <label for="sim">🎉 Sim, estarei lá!</label>
+          <input type="radio" name="presenca" id="nao" value="nao">
+          <label for="nao">😢 Não poderei ir</label>
+        </div>
+
+        <div id="blocoQtd">
+          <label class="campo">Quantas pessoas vão (contando com você)?</label>
+          <div class="contadores">
+            <div class="contador">
+              <small>Adultos</small>
+              <div class="linha">
+                <button type="button" data-alvo="adultos" data-passo="-1" aria-label="Menos um adulto">−</button>
+                <output id="adultos">1</output>
+                <button type="button" data-alvo="adultos" data-passo="1" aria-label="Mais um adulto">+</button>
+              </div>
+            </div>
+            <div class="contador">
+              <small>Crianças</small>
+              <div class="linha">
+                <button type="button" data-alvo="criancas" data-passo="-1" aria-label="Menos uma criança">−</button>
+                <output id="criancas">0</output>
+                <button type="button" data-alvo="criancas" data-passo="1" aria-label="Mais uma criança">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <label class="campo" for="recado">Deixe um recado para a <span class="nomeAniv"></span> <span style="font-weight:400;color:#9b8aae">(opcional)</span></label>
+        <textarea id="recado" name="recado" maxlength="400" placeholder="Escreva aqui…"></textarea>
+
+        <button class="btn" type="submit" id="enviar">Confirmar presença</button>
+        <p class="erro" id="erro" role="alert"></p>
+      </form>
+    </div>
+
+    <div id="blocoObrigado" class="obrigado oculto" aria-live="polite">
+      <div class="icone" id="obIcone">💜</div>
+      <h2 id="obTitulo">Obrigada!</h2>
+      <p id="obTexto"></p>
+      <a class="btn zap" id="btnZap" target="_blank" rel="noopener">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>
+        Avisar também pelo WhatsApp
+      </a>
+      <button class="btn claro" type="button" id="btnRefazer">Alterar minha resposta</button>
+    </div>
+  </section>
+
+  <!-- LOCAL -->
+  <section class="card" id="local">
+    <h2>Quando e onde</h2>
+    <div class="info">
+      <div><span class="ic">📅</span><span id="infoData"></span></div>
+      <a id="infoLocal" target="_blank" rel="noopener"><span class="ic">📍</span><span><span id="infoLocalTxt"></span><br><small style="color:var(--lilas)">Abrir no mapa ›</small></span></a>
+    </div>
+  </section>
+
+  <!-- PRESENTES -->
+  <section class="card" id="presentes">
+    <h2>Sugestões de presente</h2>
+    <p class="sub" id="presMsg"></p>
+    <ul class="presentes" id="presLista"></ul>
+    <div class="pix oculto" id="presPix">Se preferir, pode ser via Pix:<br><code id="pixChave"></code></div>
+  </section>
+
+  <footer>Conto com a sua presença!</footer>
+</main>
+
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const guardar = {
+    ler(){ try { return JSON.parse(localStorage.getItem("rsvp-any15") || "null"); } catch(e){ return null; } },
+    salvar(v){ try { localStorage.setItem("rsvp-any15", JSON.stringify(v)); } catch(e){} },
+    limpar(){ try { localStorage.removeItem("rsvp-any15"); } catch(e){} }
+  };
+
+  // Preenche textos a partir do CONFIG
+  document.querySelectorAll(".nomeAniv").forEach(el => el.textContent = CONFIG.aniversariante.split(" ")[0]);
+  $("hotLocal").href = CONFIG.mapsUrl;
+  $("infoLocal").href = CONFIG.mapsUrl;
+  $("infoLocalTxt").textContent = CONFIG.localTexto;
+  $("infoData").textContent = CONFIG.dataTexto;
+  $("prazo").textContent = CONFIG.prazoConfirmacao ? "Por favor, confirme até " + CONFIG.prazoConfirmacao : "";
+  $("presMsg").textContent = CONFIG.mensagemPresentes;
+  CONFIG.presentes.forEach(p => { const li = document.createElement("li"); li.textContent = p; $("presLista").appendChild(li); });
+  if (CONFIG.pix) { $("pixChave").textContent = CONFIG.pix; $("presPix").classList.remove("oculto"); }
+
+  // Contagem regressiva
+  const alvo = new Date(CONFIG.dataEvento).getTime();
+  function tick(){
+    let s = Math.max(0, Math.floor((alvo - Date.now())/1000));
+    if (s === 0) { $("contagem").innerHTML = '<div style="width:auto;padding:10px 18px"><b style="font-size:22px">É hoje! 🎉</b></div>'; return; }
+    $("cDias").textContent = Math.floor(s/86400);
+    $("cHoras").textContent = Math.floor(s%86400/3600);
+    $("cMin").textContent = Math.floor(s%3600/60);
+    $("cSeg").textContent = String(s%60).padStart(2, "0");
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Contadores de pessoas
+  const qtd = { adultos:1, criancas:0 };
+  document.querySelectorAll(".contador button").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.alvo, min = k === "adultos" ? 1 : 0;
+    qtd[k] = Math.min(15, Math.max(min, qtd[k] + Number(b.dataset.passo)));
+    $(k).textContent = qtd[k];
+  }));
+
+  // Mostra/esconde quantidade conforme a resposta
+  document.querySelectorAll('input[name=presenca]').forEach(r => r.addEventListener("change", () => {
+    $("blocoQtd").classList.toggle("oculto", $("nao").checked);
+  }));
+
+  function mensagemZap(d){
+    const primeiro = CONFIG.aniversariante.split(" ")[0];
+    if (d.presenca === "sim") {
+      let t = `Oi! Confirmo presença nos 15 anos da ${primeiro} 💜\nNome: ${d.nome}\nAdultos: ${d.adultos}`;
+      if (d.criancas > 0) t += `\nCrianças: ${d.criancas}`;
+      if (d.recado) t += `\nRecado: ${d.recado}`;
+      return t;
+    }
+    let t = `Oi! Infelizmente não vou poder ir aos 15 anos da ${primeiro} 😢\nNome: ${d.nome}`;
+    if (d.recado) t += `\nRecado: ${d.recado}`;
+    return t;
+  }
+
+  function mostrarObrigado(d){
+    const vai = d.presenca === "sim";
+    $("obIcone").textContent = vai ? "🎉" : "💜";
+    $("obTitulo").textContent = "Obrigada, " + d.nome.split(" ")[0] + "!";
+    const total = d.adultos + d.criancas;
+    $("obTexto").textContent = vai
+      ? `Sua presença está confirmada${total > 1 ? " para " + total + " pessoas" : ""}. Te espero no dia 12! ✨`
+      : "Que pena que você não vai poder ir. Obrigada por avisar!";
+    if (CONFIG.whatsapp) {
+      $("btnZap").href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(mensagemZap(d));
+      $("btnZap").classList.remove("oculto");
+    } else {
+      $("btnZap").classList.add("oculto");
+    }
+    $("blocoForm").classList.add("oculto");
+    $("blocoObrigado").classList.remove("oculto");
+  }
+
+  // Se a pessoa já confirmou neste celular, mostra o agradecimento
+  const anterior = guardar.ler();
+  if (anterior) mostrarObrigado(anterior);
+
+  $("btnRefazer").addEventListener("click", () => {
+    guardar.limpar();
+    $("blocoObrigado").classList.add("oculto");
+    $("blocoForm").classList.remove("oculto");
+    $("confirmar").scrollIntoView();
+  });
+
+  $("form").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    $("erro").textContent = "";
+    const nome = $("nome").value.trim();
+    if (nome.length < 2) { $("erro").textContent = "Escreva seu nome, por favor 💜"; $("nome").focus(); return; }
+
+    const d = {
+      nome,
+      telefone: $("telefone").value.trim(),
+      presenca: $("sim").checked ? "sim" : "nao",
+      adultos: $("sim").checked ? qtd.adultos : 0,
+      criancas: $("sim").checked ? qtd.criancas : 0,
+      recado: $("recado").value.trim()
+    };
+
+    // Sem planilha configurada: vai direto pelo WhatsApp
+    if (!CONFIG.scriptUrl) {
+      if (CONFIG.whatsapp) {
+        window.open("https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(mensagemZap(d)), "_blank");
+        guardar.salvar(d); mostrarObrigado(d);
+      } else {
+        $("erro").textContent = "Confirmação ainda não configurada.";
+      }
+      return;
+    }
+
+    const btn = $("enviar");
+    btn.disabled = true; btn.textContent = "Enviando…";
+    try {
+      const corpo = new URLSearchParams();
+      Object.entries(d).forEach(([k, v]) => corpo.append(k, v));
+      // no-cors: o Google Apps Script recebe normalmente; a resposta não é lida pelo navegador
+      await fetch(CONFIG.scriptUrl, { method: "POST", mode: "no-cors", body: corpo });
+      guardar.salvar(d);
+      mostrarObrigado(d);
+      $("confirmar").scrollIntoView();
+    } catch (e) {
+      $("erro").textContent = "Não consegui enviar. Verifique a internet e tente de novo"
+        + (CONFIG.whatsapp ? ", ou confirme pelo WhatsApp." : ".");
+      if (CONFIG.whatsapp) {
+        $("btnZap").href = "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(mensagemZap(d));
+      }
+    } finally {
+      btn.disabled = false; btn.textContent = "Confirmar presença";
+    }
+  });
+})();
+</script>
+</body>
+</html>
