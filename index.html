@@ -38,6 +38,12 @@ const CONFIG = {
   // Sugestões de presente: um item por linha. Lista vazia mostra só a mensagem.
   presentes: [],
   mensagemPresentes: "Sua presença já é o meu maior presente! 💜",
+  // Tamanhos da aniversariante (aparecem abaixo das sugestões). Deixe [] para esconder.
+  tamanhos: [
+    { icone: "👚", rotulo: "Roupa", valor: "M" },
+    { icone: "👖", rotulo: "Parte de baixo", valor: "36" },
+    { icone: "👟", rotulo: "Calçado", valor: "37/38" }
+  ],
   pix: ""   // chave Pix, se quiser oferecer. Deixe "" para esconder.
 };
 </script>
@@ -122,6 +128,12 @@ const CONFIG = {
 
   ul.presentes{list-style:none; padding:0; margin:6px 0 0}
   ul.presentes li{padding:11px 14px; border-radius:12px; background:var(--lavanda); margin-bottom:8px}
+  .tamanhos-titulo{text-align:center; font-weight:700; font-size:14px; color:var(--roxo); margin:18px 0 10px}
+  .tamanhos{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+  .tamanho{background:var(--lavanda); border-radius:14px; padding:12px 6px; text-align:center}
+  .tamanho .ic{font-size:22px; display:block; line-height:1.2}
+  .tamanho small{display:block; font-size:11px; color:#8a7a9c; margin-top:4px; text-transform:uppercase; letter-spacing:.04em}
+  .tamanho b{display:block; font-family:"Cormorant Garamond",serif; font-size:26px; color:var(--roxo); line-height:1.1}
   .pix{margin-top:14px; text-align:center; font-size:14px}
   .pix code{display:inline-block; margin-top:6px; padding:8px 12px; border-radius:10px; background:var(--lavanda);
     color:var(--roxo); font-size:15px; word-break:break-all}
@@ -232,6 +244,10 @@ const CONFIG = {
     <h2>Sugestões de presente</h2>
     <p class="sub" id="presMsg"></p>
     <ul class="presentes" id="presLista"></ul>
+    <div id="presTamanhos" class="oculto">
+      <p class="tamanhos-titulo">Tamanhos da aniversariante</p>
+      <div class="tamanhos" id="tamanhosLista"></div>
+    </div>
     <div class="pix oculto" id="presPix">Se preferir, pode ser via Pix:<br><code id="pixChave"></code></div>
   </section>
 
@@ -256,6 +272,16 @@ const CONFIG = {
   $("prazo").textContent = CONFIG.prazoConfirmacao ? "Por favor, confirme até " + CONFIG.prazoConfirmacao : "";
   $("presMsg").textContent = CONFIG.mensagemPresentes;
   CONFIG.presentes.forEach(p => { const li = document.createElement("li"); li.textContent = p; $("presLista").appendChild(li); });
+  if (CONFIG.tamanhos && CONFIG.tamanhos.length) {
+    CONFIG.tamanhos.forEach(t => {
+      const d = document.createElement("div"); d.className = "tamanho";
+      const ic = document.createElement("span"); ic.className = "ic"; ic.textContent = t.icone || "";
+      const sm = document.createElement("small"); sm.textContent = t.rotulo;
+      const b = document.createElement("b"); b.textContent = t.valor;
+      d.append(ic, sm, b); $("tamanhosLista").appendChild(d);
+    });
+    $("presTamanhos").classList.remove("oculto");
+  }
   if (CONFIG.pix) { $("pixChave").textContent = CONFIG.pix; $("presPix").classList.remove("oculto"); }
 
   // Contagem regressiva
